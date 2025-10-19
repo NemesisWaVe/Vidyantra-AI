@@ -1,91 +1,117 @@
-# Vidyantra AI
+# Vidyantra AI 🧠✨ | Your Personal AI Learning Companion
 
-**Vidyantra AI** is an AI-powered, personalized learning companion designed for the Indian K-12 market (CBSE, ICSE, etc.). This project serves as a Proof of Concept developed for the **AWS AI Agent Global Hackathon**, showcasing an autonomous agent capable of generating multi-modal educational content tailored to individual student needs.
+**Vidyantra AI** makes understanding K-12 science topics (CBSE/ICSE) easier and more engaging. Using cutting-edge AI on AWS, it generates clear explanations, helpful visuals, audio summaries, and short video summaries tailored to the student's learning profile.
+
+---
 
 **(Optional: Add a GIF or Screenshot here showing the main UI in action)**
-**Watch the Demo Video:** [Link to your 3-minute Demo Video]
 
-## The Vision
 
-Vidyantra AI aims to revolutionize EdTech by making learning as addictive and engaging as social media. The vision includes:
-* **Personalized Learning Paths:** AI adapts to each student's board, grade, and learning pace.
-* **Gamification:** Daily quizzes, weekly tests, and achievement badges (Bronze, Silver, Gold) to motivate students.
-* **Social Learning:** A feed featuring AI-generated "reels" (short educational videos) created by the platform and premium users, fostering a collaborative environment.
-* **"Epic Flashcards":** AI-generated flashcards based on performance to aid revision.
+---
 
-## Hackathon POC Features 🛠️
+**🚀 See it in action:** [Link to Your Demo Video - e.g., YouTube, Loom]
+**🔗 Try the live app:** [Your Live Amplify URL - e.g., https://main.d38o8u36qtnpp8.amplifyapp.com]
 
-This repository contains the functional Proof of Concept demonstrating the core engine:
+---
 
-* **Autonomous Content Generation:** An AI agent built on AWS Lambda and Bedrock that takes a topic, user profile (Board, Grade), and generates:
-    * Age-appropriate text explanations.
-    * Relevant visual aids (AI-generated images).
-    * Natural-sounding voiceovers (MP3).
-    * Dynamic video reels (MP4) combining visuals and audio with motion effects.
-* **Personalization:** Utilizes Amazon DynamoDB to store user profiles and retrieve board/grade information, tailoring the AI's output.
-* **Chapter Upload (RAG):** Implements Retrieval-Augmented Generation using Amazon Bedrock Knowledge Bases. Students can upload PDF chapters, and the AI uses that specific context to generate explanations and content.
-* **Serverless Architecture:** Fully built on scalable, cost-effective AWS serverless services.
+## Features 📖
 
-## Tech Stack 💻
+Vidyantra AI offers a personalized learning experience:
 
-**Backend (AWS):**
-* **Compute:** AWS Lambda (Python 3.12 Runtime & Container Images)
-* **AI/ML:**
-    * Amazon Bedrock (Claude 3 Haiku for text, Titan Image Generator G1 for images)
-    * Amazon Bedrock Knowledge Bases (for RAG)
-    * Amazon Polly (for Text-to-Speech)
-* **Storage:** Amazon S3 (for generated assets & chapter uploads), Amazon ECR (for container image)
-* **Database:** Amazon DynamoDB (for user profiles)
-* **Orchestration/Build:** AWS CodeBuild (for container image CI/CD), AWS IAM (for permissions)
-* **Video Processing:** MoviePy (via FFMPEG in Lambda Container)
+* **🤖 Tailored Explanations:** Ask about any science topic (e.g., "Photosynthesis", "Newton's Laws"). Get simple, easy-to-understand explanations adjusted for the student's grade level and board (CBSE/ICSE).
+* **🖼️ Visual Learning:** AI-generated images accompany text to illustrate key concepts visually.
+* **🔊 Audio Summaries:** Listen to a quick audio voiceover of the explanation generated using natural-sounding text-to-speech.
+* **🎬 Dynamic Video Reels:** Watch short, engaging video summaries combining the explanation, visuals, and audio with subtle motion effects.
+* **📚 Chapter-Specific Help (RAG):** Upload a chapter PDF! Vidyantra AI uses **Retrieval-Augmented Generation (RAG)** to answer questions based *specifically* on the content within that chapter, ensuring high relevance and accuracy.
+* **👤 Personalized Experience:** Remembers basic user details (board, grade) via DynamoDB to tailor future content.
 
-**Frontend:**
-* **Framework:** React (with Vite)
-* **Styling:** Tailwind CSS
-* **UI Components:** Shadcn/UI (Default style)
-* **Animation:** Framer Motion
-* **Icons:** Lucide React
+---
 
-**Infrastructure:**
-* **API:** Amazon API Gateway (HTTP API) - *Planned for frontend connection*
-* **Hosting:** AWS Amplify Hosting - *Planned for frontend deployment*
+## Tech Stack ⚙️
+
+Vidyantra AI leverages a powerful and scalable serverless architecture on **Amazon Web Services (AWS)**:
+
+* **Frontend:** Built with **React** and hosted globally via **AWS Amplify Hosting** for fast, reliable access.
+* **Backend API:** User requests are handled securely through **Amazon API Gateway** (using Lambda URL for direct invocation in this version).
+* **Compute Engine (AWS Lambda):**
+    * **Orchestration:** Manages the workflow for content generation.
+    * **AI Tasks:** Separate functions handle text generation, image generation, audio generation, and RAG retrieval.
+    * **Video Processing:** A dedicated Lambda function using a custom **Container Image** (built via **AWS CodeBuild** and stored in **Amazon ECR**) synthesizes videos using MoviePy.
+* **AI Models (Amazon Bedrock):**
+    * **Text Generation:** Claude 3 Haiku for clear and concise explanations.
+    * **Image Generation:** Titan Image Generator G1 for relevant visuals.
+    * **RAG:** **Bedrock Knowledge Bases** indexes uploaded PDFs (stored in **S3**) for contextual question answering.
+* **Voice Generation (Amazon Polly):** Creates natural-sounding audio summaries.
+* **Storage (Amazon S3):** Securely stores uploaded chapter PDFs, generated images, audio files, and final videos.
+* **Database (Amazon DynamoDB):** Stores user profile information (board, grade) for personalization in a fast, scalable NoSQL database.
+
+---
 
 ## Architecture 🏗️
 
+This diagram illustrates the flow of information and services:
+
 ```mermaid
 graph TD
-    subgraph Frontend_Amplify
-        UI[React App]
+    subgraph User Interface (Amplify Hosting)
+        UI[React Frontend App]
     end
 
-    subgraph API_Gateway
-        API[HTTP API Endpoint]
+    subgraph API Layer
+        %% Using Lambda URL directly in this setup
+        LambdaURL[Lambda Function URL]
     end
 
-    subgraph Backend_AWS
-        O[Orchestrator Lambda]
-        DB[(DynamoDB Users Table)]
-        KB[Bedrock Knowledge Base] -- Reads_PDF --> S3Chapters[S3 Chapter Uploads Bucket]
-        RAG[RAG Retriever Lambda] -- Queries --> KB
-        S[Scriptwriter Lambda] -- Uses --> BedrockText[Bedrock - Claude Haiku]
-        I[Image Generator Lambda] -- Uses --> BedrockImage[Bedrock - Titan Image]
-        A[Audio Generator Lambda] -- Uses --> Polly[Amazon Polly]
-        V[Video Synthesizer Lambda Container] -- Uses_MoviePy_FFmpeg --> S3Assets[S3 Generated Assets Bucket]
+    subgraph AWS Backend Services
+        subgraph Compute (AWS Lambda)
+            O[Orchestrator Function]
+            RAG[RAG Retriever Function]
+            Script[Scriptwriter Function]
+            Img[Image Generator Function]
+            Aud[Audio Generator Function]
+            Vid[Video Synthesizer Container Function]
+        end
 
+        subgraph AI & Data (Bedrock, S3, DynamoDB, Polly)
+            Bedrock_Text[Bedrock Text Model (Claude)]
+            Bedrock_Image[Bedrock Image Model (Titan)]
+            KB[Bedrock Knowledge Base]
+            Polly[Amazon Polly]
+            DB[(DynamoDB User Profiles)]
+            S3_Chapters[S3 Bucket (Chapter PDFs)]
+            S3_Assets[S3 Bucket (Generated Media)]
+        end
+
+        subgraph Container Build (CodeBuild, ECR)
+             CodeBuild[AWS CodeBuild] -- Builds & Pushes --> ECR[Amazon ECR (Video Container Image)]
+             Vid -- Uses Image From --> ECR
+        end
+
+        %% Connections
         O -- Reads --> DB
         O -- Invokes --> RAG
-        O -- Invokes --> S
-        O -- Invokes --> I
-        O -- Invokes --> A
-        O -- Invokes --> V
+        O -- Invokes --> Script
+        O -- Invokes --> Img
+        O -- Invokes --> Aud
+        O -- Invokes --> Vid
 
-        RAG -- Gets_Chunks --> O
-        S -- Script_Storyboard --> O
-        I -- Image_URLs --> S3Assets
-        A -- Audio_URL --> S3Assets
-        V -- Video_URL --> S3Assets
+        Script -- Uses --> Bedrock_Text
+        Img -- Uses --> Bedrock_Image
+        Aud -- Uses --> Polly
+        Vid -- Uses MoviePy --> S3_Assets
+
+        RAG -- Queries --> KB
+        KB -- Indexes --> S3_Chapters
+
+        Script -- Returns Text --> O
+        Img -- Writes Images --> S3_Assets
+        Aud -- Writes Audio --> S3_Assets
+        Vid -- Writes Video --> S3_Assets
+
     end
 
-    UI -- User_Input --> API -- Triggers --> O
-    API -- Returns_Asset_URLs --> UI
-    UI -- Fetches_Assets --> S3Assets
+    %% User Interaction
+    UI -- Sends Query (+ Optional File Info) --> LambdaURL -- Triggers --> O
+    O -- Returns Media URLs --> LambdaURL --> UI
+    UI -- Loads Media From --> S3_Assets
+    UI -- Uploads PDF --> S3_Chapters %% Assuming direct upload or via separate signed URL mechanism
