@@ -1,4 +1,4 @@
-# Vidyantra AI 🧠✨ | Your Personal AI Learning Companion
+# Vidyantra AI | Your Personal AI Learning Companion
 
 **Vidyantra AI** makes understanding K-12 science topics (CBSE/ICSE) easier and more engaging. Using cutting-edge AI on AWS, it generates clear explanations, helpful visuals, audio summaries, and short video summaries tailored to the student's learning profile.
 
@@ -9,25 +9,25 @@
 
 ---
 
-**🚀 See it in action:** [Link to Your Demo Video - e.g., YouTube, Loom]
-**🔗 Try the live app:** [Your Live Amplify URL - e.g., https://main.d38o8u36qtnpp8.amplifyapp.com]
+**See it in action:** [soon]
+**Try the live app:** https://main.d38o8u36qtnpp8.amplifyapp.com
 
 ---
 
-## Features 📖
+## Features
 
 Vidyantra AI offers a personalized learning experience:
 
-* **🤖 Tailored Explanations:** Ask about any science topic (e.g., "Photosynthesis", "Newton's Laws"). Get simple, easy-to-understand explanations adjusted for the student's grade level and board (CBSE/ICSE).
-* **🖼️ Visual Learning:** AI-generated images accompany text to illustrate key concepts visually.
-* **🔊 Audio Summaries:** Listen to a quick audio voiceover of the explanation generated using natural-sounding text-to-speech.
-* **🎬 Dynamic Video Reels:** Watch short, engaging video summaries combining the explanation, visuals, and audio with subtle motion effects.
-* **📚 Chapter-Specific Help (RAG):** Upload a chapter PDF! Vidyantra AI uses **Retrieval-Augmented Generation (RAG)** to answer questions based *specifically* on the content within that chapter, ensuring high relevance and accuracy.
-* **👤 Personalized Experience:** Remembers basic user details (board, grade) via DynamoDB to tailor future content.
+* **Tailored Explanations:** Ask about any science topic (e.g., "Photosynthesis", "Newton's Laws"). Get simple, easy-to-understand explanations adjusted for the student's grade level and board (CBSE/ICSE).
+* **Visual Learning:** AI-generated images accompany text to illustrate key concepts visually.
+* **Audio Summaries:** Listen to a quick audio voiceover of the explanation generated using natural-sounding text-to-speech.
+* **Dynamic Video Reels:** Watch short, engaging video summaries combining the explanation, visuals, and audio with subtle motion effects.
+* **Chapter-Specific Help (RAG):** Upload a chapter PDF! Vidyantra AI uses **Retrieval-Augmented Generation (RAG)** to answer questions based *specifically* on the content within that chapter, ensuring high relevance and accuracy.
+* **Personalized Experience:** Remembers basic user details (board, grade) via DynamoDB to tailor future content.
 
 ---
 
-## Tech Stack ⚙️
+## Tech Stack
 
 Vidyantra AI leverages a powerful and scalable serverless architecture on **Amazon Web Services (AWS)**:
 
@@ -47,23 +47,23 @@ Vidyantra AI leverages a powerful and scalable serverless architecture on **Amaz
 
 ---
 
-## Architecture 🏗️
+## Architecture
 
 This diagram illustrates the flow of information and services:
 
 ```mermaid
 graph TD
-    subgraph User_Interface [User Interface (Amplify Hosting)]
-        UI[React Frontend App]
+    subgraph User Interface
+        UI[React Frontend App (Amplify Hosting)]
     end
 
-    subgraph API_Layer [API Layer]
+    subgraph API Layer
         %% Using Lambda URL directly in this setup
         LambdaURL[Lambda Function URL]
     end
 
-    subgraph AWS_Backend_Services [AWS Backend Services]
-        subgraph Compute [Compute (AWS Lambda)]
+    subgraph AWS Backend Services
+        subgraph Compute (AWS Lambda)
             O[Orchestrator Function]
             RAG[RAG Retriever Function]
             Script[Scriptwriter Function]
@@ -72,7 +72,7 @@ graph TD
             Vid[Video Synthesizer Container Function]
         end
 
-        subgraph AI_Data [AI & Data (Bedrock, S3, DynamoDB, Polly)]
+        subgraph AI & Data (Bedrock, S3, DynamoDB, Polly)
             Bedrock_Text[Bedrock Text Model (Claude)]
             Bedrock_Image[Bedrock Image Model (Titan)]
             KB[Bedrock Knowledge Base]
@@ -82,7 +82,7 @@ graph TD
             S3_Assets[S3 Bucket (Generated Media)]
         end
 
-        subgraph Container_Build [Container Build (CodeBuild, ECR)]
+        subgraph Container Build (CodeBuild, ECR)
              CodeBuild[AWS CodeBuild] -- Builds & Pushes --> ECR[Amazon ECR (Video Container Image)]
              Vid -- Uses Image From --> ECR
         end
@@ -117,7 +117,7 @@ graph TD
     UI -- Uploads PDF --> S3_Chapters %% Assuming direct upload or via separate signed URL mechanism
 
     %% Style Nodes for Clarity (Optional but nice)
-    style User_Interface fill:#f9f,stroke:#333,stroke-width:2px
-    style API_Layer fill:#ccf,stroke:#333,stroke-width:2px
-    style AWS_Backend_Services fill:#cfc,stroke:#333,stroke-width:2px
+    style User Interface fill:#f9f,stroke:#333,stroke-width:2px
+    style API Layer fill:#ccf,stroke:#333,stroke-width:2px
+    style AWS Backend Services fill:#cfc,stroke:#333,stroke-width:2px
     style UI fill:#fff,stroke:#000,stroke-width:4px
