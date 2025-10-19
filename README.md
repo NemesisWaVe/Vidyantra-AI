@@ -65,12 +65,12 @@ graph TD
     subgraph Backend_AWS
         O[Orchestrator Lambda]
         DB[(DynamoDB Users Table)]
-        KB[Bedrock Knowledge Base] -- Reads PDF --> S3Chapters[S3 Chapter Uploads Bucket]
+        KB[Bedrock Knowledge Base] -- Reads_PDF --> S3Chapters[S3 Chapter Uploads Bucket]
         RAG[RAG Retriever Lambda] -- Queries --> KB
         S[Scriptwriter Lambda] -- Uses --> BedrockText[Bedrock - Claude Haiku]
         I[Image Generator Lambda] -- Uses --> BedrockImage[Bedrock - Titan Image]
         A[Audio Generator Lambda] -- Uses --> Polly[Amazon Polly]
-        V[Video Synthesizer Lambda (Container)] -- Uses MoviePy/FFmpeg --> S3Assets[S3 Generated Assets Bucket]
+        V[Video Synthesizer Lambda Container] -- Uses_MoviePy_FFmpeg --> S3Assets[S3 Generated Assets Bucket]
 
         O -- Reads --> DB
         O -- Invokes --> RAG
@@ -79,13 +79,13 @@ graph TD
         O -- Invokes --> A
         O -- Invokes --> V
 
-        RAG -- Gets Chunks --> O
-        S -- Script/Storyboard --> O
-        I -- Image URLs --> S3Assets
-        A -- Audio URL --> S3Assets
-        V -- Video URL --> S3Assets
+        RAG -- Gets_Chunks --> O
+        S -- Script_Storyboard --> O
+        I -- Image_URLs --> S3Assets
+        A -- Audio_URL --> S3Assets
+        V -- Video_URL --> S3Assets
     end
 
-    UI -- User Input --> API -- Triggers --> O
-    API -- Returns Asset URLs --> UI
-    UI -- Fetches Assets --> S3Assets
+    UI -- User_Input --> API -- Triggers --> O
+    API -- Returns_Asset_URLs --> UI
+    UI -- Fetches_Assets --> S3Assets
