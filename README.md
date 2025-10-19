@@ -53,41 +53,24 @@ This diagram illustrates the flow of information and services:
 
 ```mermaid
 graph TD
-    subgraph User Interface
-        UI[React Frontend App - Amplify Hosting] %% Changed parentheses to hyphen
+    subgraph User_Interface
+        UI[React Frontend App]
     end
 
-    subgraph API Layer
-        %% Using Lambda URL directly in this setup
-        LambdaURL[Lambda Function URL]
+    subgraph API
+        API_GW[API Gateway Endpoint]
     end
 
-    subgraph AWS Backend Services
-        subgraph Compute (AWS Lambda)
-            O[Orchestrator Function]
-            RAG[RAG Retriever Function]
-            Script[Scriptwriter Function]
-            Img[Image Generator Function]
-            Aud[Audio Generator Function]
-            Vid[Video Synthesizer Container Function]
-        end
+    subgraph AI_Engine_AWS
+        O[Orchestrator Lambda]
+        DB[(DynamoDB User Profiles)]
+        KB[Bedrock Knowledge Base] -- Reads --> S3_Chapters[S3 Chapter Uploads]
+        RAG[RAG Retriever Lambda] -- Queries --> KB
+        Script[Scriptwriter Lambda] -- Uses --> Bedrock_Text[Bedrock Text Model]
+        Img[Image Generator Lambda] -- Uses --> Bedrock_Image[Bedrock Image Model]
+        Aud[Audio Generator Lambda] -- Uses --> Polly[Amazon Polly]
+        Vid[Video Synthesizer Lambda Container] -- Uses MoviePy --> S3_Assets[S3 Generated Assets]
 
-        subgraph AI & Data (Bedrock, S3, DynamoDB, Polly)
-            Bedrock_Text[Bedrock Text Model (Claude)]
-            Bedrock_Image[Bedrock Image Model (Titan)]
-            KB[Bedrock Knowledge Base]
-            Polly[Amazon Polly]
-            DB[(DynamoDB User Profiles)]
-            S3_Chapters[S3 Bucket (Chapter PDFs)]
-            S3_Assets[S3 Bucket (Generated Media)]
-        end
-
-        subgraph Container Build (CodeBuild, ECR)
-             CodeBuild[AWS CodeBuild] -- Builds & Pushes --> ECR[Amazon ECR (Video Container Image)]
-             Vid -- Uses Image From --> ECR
-        end
-
-        %% Connections
         O -- Reads --> DB
         O -- Invokes --> RAG
         O -- Invokes --> Script
@@ -95,29 +78,12 @@ graph TD
         O -- Invokes --> Aud
         O -- Invokes --> Vid
 
-        Script -- Uses --> Bedrock_Text
-        Img -- Uses --> Bedrock_Image
-        Aud -- Uses --> Polly
-        Vid -- Uses MoviePy --> S3_Assets
-
-        RAG -- Queries --> KB
-        KB -- Indexes --> S3_Chapters
-
-        Script -- Returns Text --> O
-        Img -- Writes Images --> S3_Assets
-        Aud -- Writes Audio --> S3_Assets
-        Vid -- Writes Video --> S3_Assets
-
+        Script -- Text/Images --> O
+        Img -- Image URLs --> S3_Assets
+        Aud -- Audio URL --> S3_Assets
+        Vid -- Video URL --> S3_Assets
     end
 
-    %% User Interaction
-    UI -- Sends Query (+ Optional File Info) --> LambdaURL -- Triggers --> O
-    O -- Returns Media URLs --> LambdaURL --> UI
-    UI -- Loads Media From --> S3_Assets
-    UI -- Uploads PDF --> S3_Chapters %% Assuming direct upload or via separate signed URL mechanism
-
-    %% Style Nodes for Clarity (Optional but nice)
-    style User Interface fill:#f9f,stroke:#333,stroke-width:2px
-    style API Layer fill:#ccf,stroke:#333,stroke-width:2px
-    style AWS Backend Services fill:#cfc,stroke:#333,stroke-width:2px
-    style UI fill:#fff,stroke:#000,stroke-width:4px
+    UI -- Asks Question --> API_GW -- Triggers --> O
+    API_GW -- Returns Content URLs --> UI
+    UI -- Displays Content From --> S3_Assets
