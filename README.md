@@ -1,11 +1,11 @@
-# Vidyantra AI 🧠✨
+# Vidyantra AI
 
 **Vidyantra AI** is an AI-powered, personalized learning companion designed for the Indian K-12 market (CBSE, ICSE, etc.). This project serves as a Proof of Concept developed for the **AWS AI Agent Global Hackathon**, showcasing an autonomous agent capable of generating multi-modal educational content tailored to individual student needs.
 
 **(Optional: Add a GIF or Screenshot here showing the main UI in action)**
 **Watch the Demo Video:** [Link to your 3-minute Demo Video]
 
-## The Vision 🚀
+## The Vision
 
 Vidyantra AI aims to revolutionize EdTech by making learning as addictive and engaging as social media. The vision includes:
 * **Personalized Learning Paths:** AI adapts to each student's board, grade, and learning pace.
@@ -52,18 +52,17 @@ This repository contains the functional Proof of Concept demonstrating the core 
 
 ## Architecture 🏗️
 
-**(Option 1: Embed Diagram)**
 ```mermaid
 graph TD
-    subgraph Frontend (Amplify)
+    subgraph Frontend_Amplify
         UI[React App]
     end
 
-    subgraph API Gateway
+    subgraph API_Gateway
         API[HTTP API Endpoint]
     end
 
-    subgraph Backend (AWS Lambda + Bedrock + Supporting Services)
+    subgraph Backend_AWS
         O[Orchestrator Lambda]
         DB[(DynamoDB Users Table)]
         KB[Bedrock Knowledge Base] -- Reads PDF --> S3Chapters[S3 Chapter Uploads Bucket]
@@ -75,16 +74,16 @@ graph TD
 
         O -- Reads --> DB
         O -- Invokes --> RAG
-        O -- Invokes (with RAG context) --> S
-        O -- Invokes (x4) --> I
+        O -- Invokes --> S
+        O -- Invokes --> I
         O -- Invokes --> A
         O -- Invokes --> V
 
         RAG -- Gets Chunks --> O
         S -- Script/Storyboard --> O
-        I -- Image URLs --> O --> S3Assets
-        A -- Audio URL --> O --> S3Assets
-        V -- Video URL --> O --> S3Assets
+        I -- Image URLs --> S3Assets
+        A -- Audio URL --> S3Assets
+        V -- Video URL --> S3Assets
     end
 
     UI -- User Input --> API -- Triggers --> O
