@@ -53,17 +53,17 @@ This diagram illustrates the flow of information and services:
 
 ```mermaid
 graph TD
-    subgraph User Interface (Amplify Hosting)
+    subgraph User_Interface [User Interface (Amplify Hosting)]
         UI[React Frontend App]
     end
 
-    subgraph API Layer
+    subgraph API_Layer [API Layer]
         %% Using Lambda URL directly in this setup
         LambdaURL[Lambda Function URL]
     end
 
-    subgraph AWS Backend Services
-        subgraph Compute (AWS Lambda)
+    subgraph AWS_Backend_Services [AWS Backend Services]
+        subgraph Compute [Compute (AWS Lambda)]
             O[Orchestrator Function]
             RAG[RAG Retriever Function]
             Script[Scriptwriter Function]
@@ -72,7 +72,7 @@ graph TD
             Vid[Video Synthesizer Container Function]
         end
 
-        subgraph AI & Data (Bedrock, S3, DynamoDB, Polly)
+        subgraph AI_Data [AI & Data (Bedrock, S3, DynamoDB, Polly)]
             Bedrock_Text[Bedrock Text Model (Claude)]
             Bedrock_Image[Bedrock Image Model (Titan)]
             KB[Bedrock Knowledge Base]
@@ -82,7 +82,7 @@ graph TD
             S3_Assets[S3 Bucket (Generated Media)]
         end
 
-        subgraph Container Build (CodeBuild, ECR)
+        subgraph Container_Build [Container Build (CodeBuild, ECR)]
              CodeBuild[AWS CodeBuild] -- Builds & Pushes --> ECR[Amazon ECR (Video Container Image)]
              Vid -- Uses Image From --> ECR
         end
@@ -115,3 +115,9 @@ graph TD
     O -- Returns Media URLs --> LambdaURL --> UI
     UI -- Loads Media From --> S3_Assets
     UI -- Uploads PDF --> S3_Chapters %% Assuming direct upload or via separate signed URL mechanism
+
+    %% Style Nodes for Clarity (Optional but nice)
+    style User_Interface fill:#f9f,stroke:#333,stroke-width:2px
+    style API_Layer fill:#ccf,stroke:#333,stroke-width:2px
+    style AWS_Backend_Services fill:#cfc,stroke:#333,stroke-width:2px
+    style UI fill:#fff,stroke:#000,stroke-width:4px
