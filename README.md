@@ -54,7 +54,7 @@ This diagram illustrates the flow of information and services:
 ```mermaid
 graph TD
     subgraph User Interface
-        UI[React Frontend App (Amplify Hosting)]
+        UI[React Frontend App - Amplify Hosting] %% Changed parentheses to hyphen
     end
 
     subgraph API Layer
