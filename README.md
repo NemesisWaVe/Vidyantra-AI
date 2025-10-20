@@ -9,7 +9,7 @@
 
 ---
 
-**See it in action:** [soon]
+**See it in action in demo video:** https://www.youtube.com/watch?v=GjCJq2_ZU5w
 **Try the live app:** https://main.d38o8u36qtnpp8.amplifyapp.com
 
 ---
